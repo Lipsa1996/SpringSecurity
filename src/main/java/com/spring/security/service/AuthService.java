@@ -3,6 +3,7 @@ package com.spring.security.service;
 import com.spring.security.dto.LoginRequest;
 import com.spring.security.dto.RegisterRequest;
 import com.spring.security.entity.User;
+import com.spring.security.exception.UsernameAlreadyExistsException;
 import com.spring.security.repository.UserRepository;
 import com.spring.security.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,8 +30,10 @@ public class AuthService {
     }
 
     public void register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new RuntimeException("Username already exists");
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
 
         String encodedPassword =
                 passwordEncoder.encode(request.getPassword());
